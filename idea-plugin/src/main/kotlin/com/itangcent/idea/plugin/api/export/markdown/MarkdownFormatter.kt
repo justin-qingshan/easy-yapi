@@ -7,11 +7,14 @@ import com.itangcent.common.constant.Attrs
 import com.itangcent.common.kit.KVUtils
 import com.itangcent.common.model.Doc
 import com.itangcent.common.model.MethodDoc
+import com.itangcent.common.model.Param
 import com.itangcent.common.model.Request
 import com.itangcent.common.utils.*
 import com.itangcent.http.RequestUtils
 import com.itangcent.idea.plugin.api.export.core.Folder
 import com.itangcent.idea.plugin.api.export.core.FormatFolderHelper
+import com.itangcent.idea.plugin.api.export.core.methodParamToPrettyJson
+import com.itangcent.idea.plugin.api.export.core.methodReturnToPrettyJson
 import com.itangcent.idea.plugin.rule.SuvRuleContext
 import com.itangcent.idea.plugin.rule.setDoc
 import com.itangcent.idea.plugin.settings.helper.MarkdownSettingsHelper
@@ -218,6 +221,19 @@ class MarkdownFormatter {
                 objectWriter.writeObject(it.value, it.name ?: "", it.desc ?: "")
             }
             writer.nextLine()
+
+            if (markdownSettingsHelper.outputDemo()) {
+                methodDoc.params?.let {
+                    writer.nextLine()
+                    writer(
+                        ruleComputer.computer(MarkdownExportRuleKeys.METHOD_PARAMS_DEMO, suvRuleContext, methodDoc.resource())
+                            ?: "**Params Demo:**"
+                    )
+                    writer.doubleLine()
+                    parseToMdJson(writer, methodParamToPrettyJson(it))
+                }
+            }
+            writer.nextLine()
         }
 
         writer(
@@ -232,6 +248,16 @@ class MarkdownFormatter {
                 val objectWriter = objectWriterBuilder.build("methodDoc.return", writer)
                 objectWriter.writeHeader()
                 objectWriter.writeObject(it, methodDoc.retDesc ?: "")
+
+                if (markdownSettingsHelper.outputDemo()) {
+                    writer("\n")
+                    writer(
+                        ruleComputer.computer(MarkdownExportRuleKeys.METHOD_RETURN_DEMO, suvRuleContext, methodDoc.resource())
+                            ?: "**Return Demo:**"
+                    )
+                    writer.doubleLine()
+                    parseToMdJson(writer, methodReturnToPrettyJson(it))
+                }
             }
             writer.nextLine()
         }
@@ -519,6 +545,12 @@ class MarkdownFormatter {
             info["name"] = resource.toString()
             info[DESC] = "exported at ${DateUtils.formatYMD_HMS(systemProvider.currentTimeMillis().asDate())}"
         }
+    }
+
+    private fun parseToMdJson(writer: Writer, string: String?) {
+        writer("```json\n")
+        writer(string ?: "")
+        writer("\n```\n")
     }
 
     companion object {

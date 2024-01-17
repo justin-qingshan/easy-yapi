@@ -84,8 +84,13 @@ object MarkdownExportRuleKeys {
     val METHOD_DOC_PARAMS: RuleKey<String> = SimpleRuleKey(
         "md.methodDoc.params", StringRuleMode.SINGLE
     )
+    val METHOD_PARAMS_DEMO: RuleKey<String> = SimpleRuleKey(
+        "md.methodDoc.params.demo", StringRuleMode.SINGLE
+    )
     val METHOD_DOC_RETURN: RuleKey<String> = SimpleRuleKey(
         "md.methodDoc.return", StringRuleMode.SINGLE
     )
-
+    val METHOD_RETURN_DEMO: RuleKey<String> = SimpleRuleKey(
+        "md.methodDoc.return.demo", StringRuleMode.SINGLE
+    )
 }
