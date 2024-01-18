@@ -29,6 +29,10 @@ internal interface YapiSaveInterceptor {
 @ConditionOnSetting("yapiExportMode", havingValue = "ALWAYS_UPDATE")
 class AlwaysUpdateYapiSaveInterceptor : YapiSaveInterceptor {
     override fun beforeSaveApi(apiHelper: YapiApiHelper, apiInfo: HashMap<String, Any?>): Boolean {
+        val id = apiHelper.findApiByPath(apiInfo)
+        if (id != null) {
+            apiInfo["id"] = id;
+        }
         return true
     }
 }

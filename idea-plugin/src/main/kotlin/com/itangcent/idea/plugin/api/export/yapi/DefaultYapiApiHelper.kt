@@ -88,8 +88,9 @@ open class DefaultYapiApiHelper : AbstractYapiApiHelper(), YapiApiHelper {
         }
 
         try {
+            val requestPath = if (apiInfo.containsKey("id")) UPDATE_API else SAVE_API
             val returnValue = httpClientProvide!!.getHttpClient()
-                .post(yapiSettingsHelper.getServer(false) + SAVE_API)
+                .post(yapiSettingsHelper.getServer(false) + requestPath)
                 .contentType(ContentType.APPLICATION_JSON)
                 .body(apiInfo)
                 .call()
@@ -225,7 +226,8 @@ open class DefaultYapiApiHelper : AbstractYapiApiHelper(), YapiApiHelper {
         const val GET_INTERFACE = "/api/interface/get"
         const val ADD_CART = "/api/interface/add_cat"
         const val GET_CAT_MENU = "/api/interface/getCatMenu"
-        const val SAVE_API = "/api/interface/save"
+        const val SAVE_API = "/api/interface/add"
+        const val UPDATE_API = "/api/interface/up"
         const val GET_CAT = "/api/interface/list_cat"
     }
 }
